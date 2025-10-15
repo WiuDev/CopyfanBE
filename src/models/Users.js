@@ -24,6 +24,10 @@ const users = connection.define("users", {
     role: {
     type: DataTypes.STRING,
     allowNull: false,
+    },
+    course_id: {
+    type: DataTypes.UUID,
+    allowNull: true,
     }
 }, {
     tableName: "users",
