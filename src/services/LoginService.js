@@ -18,7 +18,7 @@ class LoginService {
       throw new Error("Invalid email or password");
     }
     const token = sign(
-      { name: user.name, email: user.email, role: user.role },
+      { id: user.id, name: user.name, email: user.email, role: user.role },
       JWT_SECRET,
       {
         expiresIn: "30d",

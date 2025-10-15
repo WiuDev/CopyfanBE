@@ -23,7 +23,7 @@ const Course = connection.define("Course", {
   modality: {
     type: DataTypes.STRING,
     allowNull: false,
-  }
+  },
 }, {
     tableName: "courses",
 })

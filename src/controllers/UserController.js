@@ -11,6 +11,16 @@ class UserController {
             res.status(400).json({ error: error.message });
         }
     }
+    static async updateUser(req, res) {
+        try {
+            const userId = req.userId;
+            const data = req.body;
+            const updatedUser = await UserService.updateUser(userId, data);
+            res.status(200).json(updatedUser);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = UserController;

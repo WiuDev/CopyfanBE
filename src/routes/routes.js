@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const UserController = require("../controllers/UserController");
 const LoginController = require("../controllers/LoginController");
+const isAuthenticated = require("../middlewares/isAuth");
 
  router.post("/auth/register", UserController.createUser);
  router.post("/auth/login", LoginController.login);
-// router.get("/users/me", isAuthenticated, UserController.getUser);
-// router.put("/users/me", isAuthenticated, UserController.updateUser);
+ router.put("/users/me", isAuthenticated, UserController.updateUser);
 // router.post("/order", isAuthenticated, OrderController.createOrder);
 // router.get("/order/:UserId", isAuthenticated, OrderController.getOrdersByUser);
 // router.post("/payment/process", isAuthenticated, PaymentController.processPayment);

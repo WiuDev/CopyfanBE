@@ -10,11 +10,11 @@ function isAuthenticated(req, res, next) {
         console.error("JWT_SECRET is not defined");
         return res.status(500).json({message: 'Internal server error'});
     }
-    const token = authToken.split(' ')
+    const token = authToken.split(' ')[1];
     try {
         const decoded = verify(token, JWT_SECRET);
-        const {sub} = decoded;
-        req.userId = sub;
+        const {id} = decoded;
+        req.userId = id;
         next();
     } catch (error) {
         return res.status(401).json({error: 'Token invalid or expired'});
