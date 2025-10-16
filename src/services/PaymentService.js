@@ -1,4 +1,4 @@
-const Payment = require('../models/Payment');
+const Payment = require('../models/Payments');
 const { v4: UUIDV4 } = require('uuid');
 
 class PaymentService {

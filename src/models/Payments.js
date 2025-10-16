@@ -25,11 +25,7 @@ const Payments = connection.define(
     user_id: {
       type: DataTypes.UUID,
       allowNull: false,
-    },
-    value_id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
+    }
   },
   {
     tableName: "payments",

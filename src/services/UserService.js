@@ -7,6 +7,9 @@ class UserService {
         if (existingUser) {
             throw new Error('Email already in use');
         }
+        if (password === undefined || password.length < 6) {
+            throw new Error('Password must be at least 6 characters long');
+        }
         const passwordHash = await bcrypt.hash(password, 10);
         const user = new User({ name, email, password: passwordHash, role, course_id });
         await user.save();

@@ -14,6 +14,18 @@ const Values = connection.define(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    start_date: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
+    end_date: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    }
   },
   {
     tableName: "values",

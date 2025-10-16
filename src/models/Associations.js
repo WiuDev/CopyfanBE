@@ -26,10 +26,6 @@ Course.hasMany(User, { foreignKey: 'course_id', as: 'users' });
 Course.hasMany(Material, { foreignKey: 'course_id', as: 'materials' });
 Material.belongsTo(Course, { foreignKey: 'course_id', as: 'course' });
 
-//Pagamento e Valor - 1:N
-Payment.belongsTo(Value, { foreignKey: 'value_id', as: 'value' });
-Value.hasMany(Payment, { foreignKey: 'value_id', as: 'payments' });
-
 module.exports = {
     Course,
     Material,
