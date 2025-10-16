@@ -15,8 +15,8 @@ Order.belongsTo(User, { foreignKey: 'user_id', as: 'users' });
 User.hasMany(Order, { foreignKey: 'user_id', as: 'orders' });
 
 //Pedido e Pagamento - 1:1
-Order.belongsTo(Payment, { foreignKey: 'pagamento_id', as: 'payment' });
-Payment.hasOne(Order, { foreignKey: 'pagamento_id', as: 'order' });
+Order.belongsTo(Payment, { foreignKey: 'payment_id', as: 'payment' });
+Payment.hasOne(Order, { foreignKey: 'payment_id', as: 'order' });
 
 //Curso e Usuário - 1:N
 User.belongsTo(Course, { foreignKey: 'course_id', as: 'course' });

@@ -5,6 +5,14 @@ const connection = require("../database/index");
 const MaterialsOrders = connection.define(
   "MaterialsOrders",
   {
+    material_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    order_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
     front_back: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -13,7 +21,7 @@ const MaterialsOrders = connection.define(
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
-    binding: {
+    binding: {                                                                                                                                              
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },

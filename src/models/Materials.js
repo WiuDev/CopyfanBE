@@ -30,6 +30,10 @@ const Material = connection.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    course_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    }
   },
   {
     tableName: "materials",
