@@ -11,7 +11,7 @@ const upload = require("../middlewares/upload");
  router.get("/users/me", isAuthenticated, UserController.getUser);
  router.put("/users/me", isAuthenticated,  UserController.updateUser);
  router.post("/materials", isAuthenticated, upload.single("file"),MaterialController.createMaterial);
-// router.get("/materials", isAuthenticated, MaterialController.getAllMaterials);
+ router.get("/materials/:id", isAuthenticated, MaterialController.getMaterial);
 // router.post("/order", isAuthenticated, OrderController.createOrder);
 // router.get("/order/:UserId", isAuthenticated, OrderController.getOrdersByUser);
 // router.post("/payment/process", isAuthenticated, PaymentController.processPayment);

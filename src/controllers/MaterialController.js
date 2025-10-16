@@ -21,6 +21,20 @@ class MaterialController {
       res.status(400).json({ error: error.message });
     }
   }
+  static async getMaterial(req, res) {
+    try {
+      const materialId = req.params.id;
+      const material = await MaterialService.getMaterial(materialId);
+      const fileBuffer = material.file;
+      const fileName = material.fileName;
+      const mimetype = (fileName.endsWith('.pdf')) ? 'application/pdf' : material.mimetype;
+      res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+      res.setHeader("Content-Type", mimetype);
+      res.setHeader("Content-Length", fileBuffer.length);
+      res.status(200).send(fileBuffer);
+    } catch (error) {
+      res.status(404).json({ error: error.message });
+    }
+  }
 }
-
 module.exports = MaterialController;

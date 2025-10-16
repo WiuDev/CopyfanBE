@@ -22,6 +22,14 @@ const Material = connection.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    fileName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    mimetype: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
   {
     tableName: "materials",
