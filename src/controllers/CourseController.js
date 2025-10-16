@@ -1,4 +1,3 @@
-const express = require("express");
 const CourseService = require("../services/CourseService");
 
 class CourseController {

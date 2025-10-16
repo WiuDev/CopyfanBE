@@ -1,4 +1,3 @@
-const express = require('express');
 const UserService = require('../services/UserService');
 
 class UserController {
@@ -17,6 +16,15 @@ class UserController {
             const data = req.body;
             const updatedUser = await UserService.updateUser(userId, data);
             res.status(200).json(updatedUser);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+    static async getUser(req, res) {
+        try {
+            const userId = req.userId;
+            const user = await UserService.getUserById(userId);
+            return res.status(200).json(user);
         } catch (error) {
             res.status(400).json({ error: error.message });
         }

@@ -33,6 +33,16 @@ class UserService {
         await user.save();
         return { name: user.name, email: user.email, role: user.role, course_id: user.course_id };
     }
+    static async getUserById(userId) {
+        if (!userId) {
+            throw new Error('Invalid user ID');
+        }
+        const user = await User.findByPk(userId, { attributes: ['id', 'name', 'email', 'role', 'course_id'] });
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return user;
+    }
 }
 
 module.exports = UserService;

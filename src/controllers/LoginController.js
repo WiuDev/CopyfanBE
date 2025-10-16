@@ -1,4 +1,3 @@
-const express = require('express');
 const LoginService = require('../services/LoginService');
 
 class LoginController {

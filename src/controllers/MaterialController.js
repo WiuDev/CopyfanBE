@@ -1,0 +1,26 @@
+const MaterialService = require("../services/MaterialService");
+
+class MaterialController {
+  static async createMaterial(req, res) {
+    try {
+      const { name, classPeriod, course_id } = req.body;
+      const file = req.file;
+      if (!file) {
+        throw new Error("File is required");
+      }
+      const material = await MaterialService.createMaterial({
+        name,
+        classPeriod,
+        course_id,
+        fileBuffer: file.buffer,
+        fileName: file.originalname,
+        mimetype: file.mimetype,
+      });
+      res.status(201).json(material);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+}
+
+module.exports = MaterialController;
