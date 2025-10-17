@@ -9,14 +9,14 @@ async function isAuthenticated(req, res, next) {
 
         return res.status(401).json({ message: "No token provided" });
     }
+
     
     if (!JWT_SECRET) {
         console.error("Server Configuration Error: JWT Secret is missing.");
         return next(new Error("JWT Secret is missing.")); 
     }
     
-    const token = authToken.split(" ")[1];
-
+    const token = authToken.trim().split(" ")[1];
     try {
         const decoded = verify(token, JWT_SECRET); 
         const { id } = decoded;

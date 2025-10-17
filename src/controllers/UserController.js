@@ -22,7 +22,7 @@ class UserController {
     }
     static async getUser(req, res) {
         try {
-            const userId = req.userId;
+            const userId = req.user.id;
             const user = await UserService.getUserById(userId);
             return res.status(200).json(user);
         } catch (error) {
