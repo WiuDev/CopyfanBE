@@ -22,6 +22,10 @@ const Material = connection.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    total_pages: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     fileName: {
       type: DataTypes.STRING,
       allowNull: false,

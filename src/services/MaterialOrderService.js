@@ -1,17 +1,15 @@
 const MaterialOrder = require("../models/MaterialsOrders");
 const ValueService = require("./ValueService");
+const Material = require("../models/Materials");
 
 class MaterialOrderService {
-  // Função auxiliar robusta para limpar e converter preços do DB para Number
   static cleanAndParse(priceValue) {
-    // Se já for um número (0, ou algum outro cálculo), retorne-o
     if (typeof priceValue !== "string" && !isNaN(Number(priceValue))) {
       return Number(priceValue);
     }
 
     let cleaned = String(priceValue).trim();
 
-    // Remove caracteres de moeda/não-numéricos e substitui vírgula por ponto
     cleaned = cleaned.replace(/[^\d.,]/g, "").replace(",", ".");
 
     return parseFloat(cleaned);
@@ -24,13 +22,28 @@ class MaterialOrderService {
    */
 
   static async createMaterialOrder(materialOrderData, order_id, t) {
-    const currentPrices = await ValueService.getCurrentPrices(t); // CORRIGIDO: Ordem correta de desestruturação
+    const currentPrices = await ValueService.getCurrentPrices(t);
 
-    const { start_page, end_page, colored, front_back, binding, quantity } =
-      materialOrderData; // Garante que a quantidade e as páginas são números
+    const { material_id,start_page, end_page, colored, front_back, binding, quantity } =
+      materialOrderData;
 
-    const totalPages = Number(end_page) - Number(start_page) + 1;
-    const finalQuantity = Number(quantity); // Conversão dos Preços Congelados
+    const material = await Material.findByPk(material_id, { transaction: t });
+    if (!material) {
+      throw new Error(`Material com ID ${material_id} não encontrado.`);
+    }
+    const safeTotalPages = material.total_pages;
+
+    const finalQuantity = Number(quantity);
+    const numStartPage = Number(start_page);
+    const numEndPage = Number(end_page);
+
+    if (numEndPage > safeTotalPages || numStartPage < 1 || numStartPage > numEndPage) {
+      throw new Error(
+        `O intervalo de páginas solicitado (${numStartPage}-${numEndPage}) é inválido para um arquivo de ${safeTotalPages} páginas.`
+      );
+    }
+
+    const totalPages = numEndPage - numStartPage + 1;
 
     const basePrice = MaterialOrderService.cleanAndParse(
       currentPrices[ValueService.DESCRIPTIONS.PRECO_BASE_PB.trim()].value
@@ -54,12 +67,11 @@ class MaterialOrderService {
         )
       : 0;
 
-    // Checagem final de sanidade: garante que o preço base é válido
     if (isNaN(basePrice) || basePrice <= 0) {
       throw new Error(
         "Erro: O preço base P&B não é um número válido ou não foi configurado."
       );
-    } // Cálculo do Total Congelado
+    }
 
     const price_unitary_freeze =
       basePrice + colorIncrement + frontBackPriceIncrement;
