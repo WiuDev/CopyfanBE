@@ -9,7 +9,7 @@ class OrderService {
   static STATUS = {
     WAITING_PAYMENT: "waiting_payment",
     PROCESSING: "processing",
-    FAILED: "failed",
+    CANCELED: "canceled",
     COMPLETED: "completed",
   };
   static async createOrder({ user_id, materials, methodPayment }) {
@@ -51,6 +51,29 @@ class OrderService {
     });
 
     return orderResult;
+  }
+  static async updateOrderStatus(orderId, status) {
+    const order = await Order.findByPk(orderId);
+    if (!order) {
+      throw new Error("Order not found");
+    }
+    if(status !== OrderService.STATUS.WAITING_PAYMENT &&
+       status !== OrderService.STATUS.PROCESSING &&
+       status !== OrderService.STATUS.CANCELED &&
+       status !== OrderService.STATUS.COMPLETED ) {
+      throw new Error("Invalid status value. Try: 'waiting_payment', 'processing', 'canceled', 'completed'");
+    }
+    order.status = status;
+    await order.save();
+    return order;
+  }
+  static async getAllOrders() {
+    const orders = await Order.findAll();
+    return orders;
+  }
+  static async getOrderById(orderId) {
+    const order = await Order.findByPk(orderId);
+    return order;
   }
 }
 
