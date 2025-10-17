@@ -19,7 +19,7 @@ const Payments = connection.define(
       allowNull: false,
     },
     totalValue: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
     user_id: {

@@ -11,7 +11,7 @@ const Values = connection.define(
       primaryKey: true,
     },
     value: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
     description: {

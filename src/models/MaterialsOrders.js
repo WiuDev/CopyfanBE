@@ -38,18 +38,18 @@ const MaterialsOrders = connection.define(
       allowNull: false,
     },
     price_unitary_freeze: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: true,
       defaultValue: 0,
 
     },
     price_binding_freeze: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: true,
       defaultValue: 0,
     }, 
     total_price_freeze: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: true,
       defaultValue: 0,
     }

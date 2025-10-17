@@ -2,10 +2,10 @@ const Value = require("../models/Values");
 const { Op } = require("sequelize");
 
 const DESCRIPTIONS = {
-    PRECO_BASE_PB: "Preço base preto e branco por página",
-    ACRESCIMO_COLORIDO: "Acréscimo por página para impressão colorida",
-    ACRESCIMO_FRENTE_VERSO: "Acréscimo por impressão frente e verso",
-    PRECO_ENCADERNACAO: "Preço fixo por encadernação",
+    PRECO_BASE_PB: "Preço base P&B",
+    ACRESCIMO_COLORIDO: "Acréscimo Colorido",
+    ACRESCIMO_FRENTE_VERSO: "Acréscimo Frente e Verso",
+    PRECO_ENCADERNACAO: "Preço de Encadernação",
 }
 
 
