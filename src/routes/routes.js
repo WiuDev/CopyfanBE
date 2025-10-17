@@ -6,6 +6,7 @@ const MaterialController = require("../controllers/MaterialController");
 const OrderController = require("../controllers/OrderController");
 const ValueController = require("../controllers/ValueController");
 const PaymentController = require("../controllers/PaymentController");
+const CourseController = require("../controllers/CourseController");
 const isAuthenticated = require("../middlewares/isAuth");
 const isAdmin = require("../middlewares/isAdmin");
 const isTeacher = require("../middlewares/isTeacher")
@@ -25,12 +26,14 @@ const upload = require("../middlewares/upload");
  router.get("/values", isAuthenticated, ValueController.getValue);
  router.get("/orders/:id", isAuthenticated, OrderController.getOrderById);
  router.get("/payments/:id", isAuthenticated, PaymentController.getPaymentDetails);
+ router.get("/courses", isAuthenticated, CourseController.getAllCourses);
 
  //WITH ADMIN
  router.put("/values/:id", isAuthenticated, isAdmin, ValueController.updateValue);
  router.put("/orders/:id/status", isAuthenticated, isAdmin, OrderController.updateOrderStatus);
  router.get("/orders", isAuthenticated, isAdmin, OrderController.getAllOrders);
  router.get("/payments", isAuthenticated, isAdmin, PaymentController.getAllPayments);
+ router.post("/courses", isAuthenticated, isAdmin, CourseController.createCourse);
 // router.get("/orders/:UserId", isAuthenticated, OrderController.getOrdersByUser);
 // router.get("/admin/orders", isAuthenticated, isAdmin, AdminController.getAllOrders);
 // router.get("/admin/orders/:id", isAuthenticated, isAdmin, AdminController.getOrderById);
