@@ -1,23 +1,39 @@
-const {verify} = require('jsonwebtoken');
-const {JWT_SECRET} = process.env;
+const { verify } = require("jsonwebtoken");
+const User = require("../models/Users");
 
-function isAuthenticated(req, res, next) {
-   const authToken = req.headers.authorization;
+async function isAuthenticated(req, res, next) {
+    const JWT_SECRET = process.env.JWT_SECRET; 
+    const authToken = req.headers.authorization;
+
     if (!authToken) {
-        return res.status(401).json({message: 'No token provided'});
+
+        return res.status(401).json({ message: "No token provided" });
     }
-    if(!JWT_SECRET){
-        console.error("JWT_SECRET is not defined");
-        return res.status(500).json({message: 'Internal server error'});
+    
+    if (!JWT_SECRET) {
+        console.error("Server Configuration Error: JWT Secret is missing.");
+        return next(new Error("JWT Secret is missing.")); 
     }
-    const token = authToken.split(' ')[1];
+    
+    const token = authToken.split(" ")[1];
+
     try {
-        const decoded = verify(token, JWT_SECRET);
-        const {id} = decoded;
-        req.userId = id;
-        next();
+        const decoded = verify(token, JWT_SECRET); 
+        const { id } = decoded;
+
+        const userDB = await User.findByPk(id); 
+        
+        if (!userDB) {
+            return res.status(401).json({ error: 'User not found in database' });
+        }
+        
+        req.user = { id: userDB.id, role: userDB.role };
+        
+        return next();
+        
     } catch (error) {
-        return res.status(401).json({error: 'Token invalid or expired'});
+        console.error("Authentication failed:", error.message);
+        return res.status(401).json({ error: "Token invalid or expired" });
     }
 }
 

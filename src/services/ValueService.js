@@ -50,6 +50,18 @@ class ValueService {
       end_date
     });
   }
+  static async updateValue(id, { description, value, start_date, end_date}) {
+    const valueRecord = await Value.findByPk(id);
+    if (!valueRecord) {
+      throw new Error("Value record not found");
+    }
+    return await valueRecord.update({
+      description,
+      value,
+      start_date,
+      end_date
+    });
+  }
 }
 
 module.exports = ValueService;
