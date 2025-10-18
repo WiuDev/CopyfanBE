@@ -26,6 +26,10 @@ Course.hasMany(User, { foreignKey: 'course_id', as: 'users' });
 Course.hasMany(Material, { foreignKey: 'course_id', as: 'materials' });
 Material.belongsTo(Course, { foreignKey: 'course_id', as: 'course' });
 
+MaterialOrder.belongsTo(Order, { foreignKey: 'order_id', as: 'OrderDetails' });+
+MaterialOrder.belongsTo(Material, { foreignKey: 'material_id', as: 'MaterialDetails' });
+Order.hasMany(MaterialOrder, { foreignKey: 'order_id', as: 'Items' });
+
 module.exports = {
     Course,
     Material,

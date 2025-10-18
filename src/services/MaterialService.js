@@ -1,4 +1,5 @@
 const Material = require("../models/Materials");
+const Course = require("../models/Courses");
 const { fileTypeFromBuffer } = require("file-type");
 const pdf = require("pdf-parse");
 
@@ -76,6 +77,17 @@ class MaterialService {
       return 1;
     }
     throw new Error("Unsupported file type for page count");
+  }
+  static async getAllMaterials() {
+    const materials = await Material.findAll({
+      attributes: ['id', 'name', 'classPeriod', 'course_id', 'fileName', 'mimetype', 'total_pages', 'createdAt', 'updatedAt'],
+      include: [{
+        model: Course,
+        as: 'course',
+        attributes: ['id', 'title']
+      }]
+    });
+    return materials;
   }
 }
 const imageMimeTypes = ["image/jpeg", "image/png", "image/gif", "image/tiff"];

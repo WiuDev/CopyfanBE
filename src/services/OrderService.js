@@ -1,5 +1,8 @@
 const Order = require("../models/Orders");
+const Material = require("../models/Materials");
+const MaterialOrder = require("../models/MaterialsOrders");
 const User = require("../models/Users");
+const Payment = require("../models/Payments");
 const PaymentService = require("../services/PaymentService");
 const MaterialOrderService = require("../services/MaterialOrderService");
 const sequelize = require("../database/index");
@@ -27,11 +30,7 @@ class OrderService {
 
       for (const item of materials) {
         const { total_price_freeze } =
-          await MaterialOrderService.createMaterialOrder(
-            item,
-            order.id,
-            t
-          );
+          await MaterialOrderService.createMaterialOrder(item, order.id, t);
         totalValue += total_price_freeze;
       }
 
@@ -57,11 +56,15 @@ class OrderService {
     if (!order) {
       throw new Error("Order not found");
     }
-    if(status !== OrderService.STATUS.WAITING_PAYMENT &&
-       status !== OrderService.STATUS.PROCESSING &&
-       status !== OrderService.STATUS.CANCELED &&
-       status !== OrderService.STATUS.COMPLETED ) {
-      throw new Error("Invalid status value. Try: 'waiting_payment', 'processing', 'canceled', 'completed'");
+    if (
+      status !== OrderService.STATUS.WAITING_PAYMENT &&
+      status !== OrderService.STATUS.PROCESSING &&
+      status !== OrderService.STATUS.CANCELED &&
+      status !== OrderService.STATUS.COMPLETED
+    ) {
+      throw new Error(
+        "Invalid status value. Try: 'waiting_payment', 'processing', 'canceled', 'completed'"
+      );
     }
     order.status = status;
     await order.save();
@@ -75,7 +78,27 @@ class OrderService {
     const order = await Order.findByPk(orderId);
     return order;
   }
+  static async getOrdersByUser(userId) {
+    const orders = await Order.findAll({
+      where: { user_id: userId },
+      include: [
+        {
+          model: Payment,
+          as: "payment",
+          attributes: ["statusPayment", "totalValue"],
+        },
+        {
+          model: Material,
+          as: "materials",
+          through: {
+            attributes: [],
+          },
+          attributes: ["name", "classPeriod", "total_pages"],
+        },
+      ],
+    });
+    return orders;
+  }
 }
-
 
 module.exports = OrderService;

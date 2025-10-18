@@ -60,5 +60,14 @@ class OrderController {
       res.status(400).json({ error: error.message });
     }
   }
+  static async getOrdersByUser(req, res) {
+    try {
+      const userId = req.user.id;
+      const orders = await OrderService.getOrdersByUser(userId);
+      res.status(200).json(orders);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
 }
 module.exports = OrderController;
