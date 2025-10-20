@@ -4,6 +4,10 @@ class MaterialController {
   static async createMaterial(req, res) {
     try {
       const { name, classPeriod, course_id } = req.body;
+      const user_id = req.user.id;
+      if (!user_id) {
+        throw new Error("User ID is required");
+      }
       const file = req.file;
       if (!file) {
         throw new Error("File is required");
@@ -12,6 +16,7 @@ class MaterialController {
         name,
         classPeriod,
         course_id,
+        user_id,
         fileBuffer: file.buffer,
         fileName: file.originalname,
         mimetype: file.mimetype,

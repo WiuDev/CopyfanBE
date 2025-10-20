@@ -10,7 +10,7 @@ class CourseService {
         return course;
     }
     static async getAllCourses() {
-        const courses = await Course.findAll();
+        const courses = await Course.findAll({attributes: ['id', 'title'], order: [['title', 'ASC']]});
         return courses;
     }
 }

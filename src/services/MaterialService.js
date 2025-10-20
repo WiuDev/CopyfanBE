@@ -1,5 +1,6 @@
 const Material = require("../models/Materials");
 const Course = require("../models/Courses");
+const User = require("../models/Users");
 const { fileTypeFromBuffer } = require("file-type");
 const pdf = require("pdf-parse");
 
@@ -8,6 +9,7 @@ class MaterialService {
     name,
     classPeriod,
     course_id,
+    user_id,
     fileBuffer,
     fileName,
     mimetype,
@@ -22,7 +24,14 @@ class MaterialService {
       console.error("Error detecting file type:", error);
     }
 
-    if (!name || !fileBuffer || !classPeriod || !course_id || !fileName) {
+    if (
+      !name ||
+      !fileBuffer ||
+      !classPeriod ||
+      !course_id ||
+      !fileName ||
+      !user_id
+    ) {
       throw new Error("All fields are required");
     }
     const total_pages = await MaterialService.getTotalPages(
@@ -32,24 +41,31 @@ class MaterialService {
     if (total_pages <= 0) {
       throw new Error("O arquivo não contém páginas válidas para impressão.");
     }
-
     const material = await Material.create({
       name,
       classPeriod,
       course_id,
+      user_id,
       file: fileBuffer,
       fileName: fileName,
       mimetype: fileType,
       total_pages: total_pages,
     });
+
+    const materialWithDetails = await MaterialService.getMaterialWithDetails(
+      material.id
+    );
     return {
       id: material.id,
       name: material.name,
       classPeriod: material.classPeriod,
       course_id: material.course_id,
+      user_id: material.user_id,
       fileName: material.fileName,
       mimetype: material.mimetype,
       total_pages: material.total_pages,
+      uploader: materialWithDetails.uploader,
+      course: materialWithDetails.course,
     };
   }
   static async getMaterial(materialId) {
@@ -80,14 +96,51 @@ class MaterialService {
   }
   static async getAllMaterials() {
     const materials = await Material.findAll({
-      attributes: ['id', 'name', 'classPeriod', 'course_id', 'fileName', 'mimetype', 'total_pages', 'createdAt', 'updatedAt'],
-      include: [{
-        model: Course,
-        as: 'course',
-        attributes: ['id', 'title']
-      }]
+      attributes: [
+        "id",
+        "name",
+        "classPeriod",
+        "course_id",
+        "fileName",
+        "mimetype",
+        "total_pages",
+        "createdAt",
+        "updatedAt",
+      ],
+      include: [
+        {
+          model: Course,
+          as: "course",
+          attributes: ["id", "title"],
+        },
+        {
+          model: User,
+          as: "uploader",
+          attributes: ["id", "name"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
     });
     return materials;
+  }
+  static async getMaterialWithDetails(materialId) {
+    return await Material.findByPk(materialId, {
+      attributes: [
+        "id",
+        "name",
+        "classPeriod",
+        "course_id",
+        "user_id",
+        "fileName",
+        "mimetype",
+        "total_pages",
+        "createdAt",
+      ],
+      include: [
+        { model: User, as: "uploader", attributes: ["id", "name"] },
+        { model: Course, as: "course", attributes: ["title"] },
+      ],
+    });
   }
 }
 const imageMimeTypes = ["image/jpeg", "image/png", "image/gif", "image/tiff"];
