@@ -1,3 +1,4 @@
+const MaterialOrderService = require("../services/MaterialOrderService");
 const OrderService = require("../services/OrderService");
 
 class OrderController {
@@ -65,6 +66,20 @@ class OrderController {
       const userId = req.user.id;
       const orders = await OrderService.getOrdersByUser(userId);
       res.status(200).json(orders);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+  static async calculateOrderPrice(req, res) {
+    const calculationData = req.body;
+    try {
+      const totalPrice = await MaterialOrderService.calculatePrice(
+        calculationData
+      );
+      const formattedPrice = `R$ ${totalPrice.toFixed(2).replace(".", ",")}`;
+      res
+        .status(200)
+        .json({ totalPrice: totalPrice, formattedPrice: formattedPrice });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
