@@ -3,9 +3,12 @@ const OrderService = require("../services/OrderService");
 
 class OrderController {
   static async createOrder(req, res) {
-    const user_id = req.userId;
+    const user_id = req.user?.id;
     const { materials, methodPayment } = req.body;
     try {
+      if (!user_id) {
+        return res.status(401).json({ error: "Usuário não autenticado" });
+      }
       if (!materials || materials.length === 0) {
         return res
           .status(400)

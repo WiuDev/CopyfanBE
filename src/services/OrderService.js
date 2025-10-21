@@ -45,10 +45,8 @@ class OrderService {
       );
       order.payment_id = payment.id;
       await order.save({ transaction: t });
-
       return order;
     });
-
     return orderResult;
   }
   static async updateOrderStatus(orderId, status) {
