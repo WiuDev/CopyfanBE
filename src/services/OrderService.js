@@ -89,11 +89,13 @@ class OrderService {
           model: Material,
           as: "materials",
           through: {
-            attributes: [],
+            model: MaterialOrder,
+            attributes: ["start_page", "end_page", "quantity"],
           },
           attributes: ["name", "classPeriod", "total_pages"],
         },
       ],
+      order: [["createdAt", "DESC"]],
     });
     return orders;
   }

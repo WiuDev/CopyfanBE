@@ -26,6 +26,7 @@ const users = connection.define(
     role: {
       type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: "user",
     },
     course_id: {
       type: DataTypes.UUID,

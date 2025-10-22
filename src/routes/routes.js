@@ -21,6 +21,7 @@ router.put("/users/me", isAuthenticated, UserController.updateUser);
 router.get("/orders/me", isAuthenticated, OrderController.getOrdersByUser);
 router.get("/materials/:id", isAuthenticated, MaterialController.getMaterial);
 router.get("/materials", isAuthenticated, MaterialController.getAllMaterials);
+router.get('/materials/:id/metadata', isAuthenticated, MaterialController.getMaterialDetails);
 router.get("/values", isAuthenticated, ValueController.getValue);
 router.get("/orders/:id", isAuthenticated, OrderController.getOrderById);
 router.get(
@@ -28,7 +29,7 @@ router.get(
   isAuthenticated,
   PaymentController.getPaymentDetails
 );
-router.get("/courses", isAuthenticated, CourseController.getAllCourses);
+router.get("/courses", CourseController.getAllCourses);
 router.post("/orders", isAuthenticated, OrderController.createOrder);
 router.post("/values", isAuthenticated, ValueController.createValue);
 router.post(

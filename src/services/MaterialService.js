@@ -49,7 +49,7 @@ class MaterialService {
       file: fileBuffer,
       fileName: fileName,
       mimetype: fileType,
-      total_pages: total_pages,
+      total_pages: total_pages
     });
 
     const materialWithDetails = await MaterialService.getMaterialWithDetails(

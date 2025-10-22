@@ -54,5 +54,14 @@ class MaterialController {
       res.status(400).json({ error: error.message });
     }
   }
+  static async getMaterialDetails(req, res) {
+    try {
+      const materialId = req.params.id;
+      const metadata = await MaterialService.getMaterialWithDetails(materialId);
+      res.status(200).json(metadata);
+    } catch (error) {
+      res.status(404).json({ error: error.message });
+    }
+  }
 }
 module.exports = MaterialController;
