@@ -3,33 +3,28 @@ const connection = require('./src/database/index')
 
 const coursesData = [
     {
-        title: "Algoritmos e Estrutura de Dados",
-        degree: "Ciência da Computação",
-        levelSeries: "1º Semestre",
+        title: "Engenharia de Software",
+        degree: "Bacharelado",
         modality: "Presencial"
     },
     {
-        title: "Cálculo Diferencial e Integral I",
-        degree: "Engenharia Civil",
-        levelSeries: "2º Semestre",
+        title: "Direito",
+        degree: "Bacharelado",
         modality: "Presencial"
     },
     {
         title: "Marketing Digital Avançado",
-        degree: "Comunicação Social",
-        levelSeries: "4º Semestre",
+        degree: "Bacharelado",
         modality: "EAD"
     },
     {
-        title: "Direito Constitucional",
-        degree: "Direito",
-        levelSeries: "3º Semestre",
+        title: "Inteligência Artificial Aplicada",
+        degree: "Mestrado",
         modality: "Presencial"
     },
     {
-        title: "Contabilidade de Custos",
-        degree: "Administração",
-        levelSeries: "5º Semestre",
+        title: "Ciência de Dados",
+        degree: "Doutorado",
         modality: "EAD"
     }
 ];

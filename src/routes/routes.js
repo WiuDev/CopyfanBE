@@ -9,7 +9,6 @@ const PaymentController = require("../controllers/PaymentController");
 const CourseController = require("../controllers/CourseController");
 const isAuthenticated = require("../middlewares/isAuth");
 const isAdmin = require("../middlewares/isAdmin");
-const isTeacher = require("../middlewares/isTeacher");
 const upload = require("../middlewares/upload");
 
 // WITHOUT AUTH

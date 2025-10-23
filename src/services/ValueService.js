@@ -29,6 +29,7 @@ class ValueService {
       },
       transaction: t,
     });
+    console.log("Found prices:", prices);
     if (!prices || prices.length < Object.keys(DESCRIPTIONS).length) {
       throw new Error("No current prices found");
     }

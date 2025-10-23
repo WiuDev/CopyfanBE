@@ -18,10 +18,6 @@ const Course = connection.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    levelSeries: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     modality: {
       type: DataTypes.STRING,
       allowNull: false,

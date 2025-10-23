@@ -3,8 +3,9 @@ const MaterialService = require("../services/MaterialService");
 class MaterialController {
   static async createMaterial(req, res) {
     try {
-      const { name, classPeriod, course_id } = req.body;
+      const { name, classPeriod, is_visible, course_id } = req.body;
       const user_id = req.user.id;
+      const role = req.user.role;
       if (!user_id) {
         throw new Error("User ID is required");
       }
@@ -17,9 +18,11 @@ class MaterialController {
         classPeriod,
         course_id,
         user_id,
+        role,
+        is_visible,
         fileBuffer: file.buffer,
         fileName: file.originalname,
-        mimetype: file.mimetype,
+        mimetype: file.mimetype
       });
       res.status(201).json(material);
     } catch (error) {
@@ -48,7 +51,32 @@ class MaterialController {
   }
   static async getAllMaterials(req, res) {
     try {
-      const materials = await MaterialService.getAllMaterials();
+      const AuthenticatedUserId = req.user.id;
+
+      const {
+        ownerId,
+        role,
+        is_visible,
+        course_id,
+        classPeriod,
+        name
+      } = req.query;
+      const filters = {
+        ownerId,
+        role,
+        is_visible: is_visible ? is_visible === 'true' : undefined,
+        course_id,
+        classPeriod,
+        name
+      }
+      const finalFilters = Object.keys(filters).reduce((acc, key) => {
+            const value = filters[key];
+            if (value !== undefined && value !== null && value !== '') { 
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+      const materials = await MaterialService.getAllMaterials(AuthenticatedUserId, finalFilters);
       res.status(200).json(materials);
     } catch (error) {
       res.status(400).json({ error: error.message });

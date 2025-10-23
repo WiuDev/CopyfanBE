@@ -58,18 +58,18 @@ class UserService {
       throw new Error(passwordValidation.message);
     }
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = User.create({
+    const user = await User.create({
       name,
       email,
       password: passwordHash,
       role: role || "user",
       course_id,
     });
-    const createdUser = await User.findOne({ where: { email }, attributes: { exclude: ['password'] } });
-    if (!createdUser) {
-      throw new Error("Error creating user");
+    if(!user){
+      throw new Error("User creation failed");
     }
-    const userObject = createdUser.get({ plain: true });
+    const userObject = user.get({ plain: true });
+    delete userObject.password;
     return userObject;
   }
   static async updateUser(userId, { name, email, password, role, course_id }) {

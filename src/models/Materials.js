@@ -14,6 +14,16 @@ const Material = connection.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    is_visible: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false
+    },
+    role: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "user"
+    },
     file: {
       type: DataTypes.BLOB,
       allowNull: false,

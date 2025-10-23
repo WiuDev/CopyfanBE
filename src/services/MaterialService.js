@@ -3,12 +3,15 @@ const Course = require("../models/Courses");
 const User = require("../models/Users");
 const { fileTypeFromBuffer } = require("file-type");
 const pdf = require("pdf-parse");
+const { Op, Sequelize } = require("sequelize");
 
 class MaterialService {
   static async createMaterial({
     name,
     classPeriod,
     course_id,
+    role,
+    is_visible,
     user_id,
     fileBuffer,
     fileName,
@@ -46,10 +49,12 @@ class MaterialService {
       classPeriod,
       course_id,
       user_id,
+      role,
+      is_visible,
       file: fileBuffer,
       fileName: fileName,
       mimetype: fileType,
-      total_pages: total_pages
+      total_pages: total_pages,
     });
 
     const materialWithDetails = await MaterialService.getMaterialWithDetails(
@@ -94,14 +99,64 @@ class MaterialService {
     }
     throw new Error("Unsupported file type for page count");
   }
-  static async getAllMaterials() {
+  static async getAllMaterials(authenticatedUserId, filters) {
+    const andConditions = [];
+
+    let visibilityCondition = {
+      [Op.or]: [
+        { user_id: authenticatedUserId },
+        { is_visible: true, role: "professor" },
+      ],
+    };
+
+    if (filters.ownerId) {
+      visibilityCondition = { user_id: filters.ownerId };
+    }
+
+    if (filters.role === "professor" && filters.is_visible === true) {
+      visibilityCondition = {
+        [Op.and]: [{ is_visible: true }, { role: "professor" }],
+      };
+    }
+
+    andConditions.push(visibilityCondition);
+
+    if (
+      filters.classPeriod &&
+      filters.classPeriod !== "null" &&
+      filters.classPeriod !== ""
+    ) {
+      const filterValueLower = filters.classPeriod.toLowerCase();
+      andConditions.push(
+        Sequelize.where(Sequelize.fn("lower", Sequelize.col("classPeriod")), {
+          [Op.like]: `%${filterValueLower}%`,
+        })
+      );
+    }
+    if (filters.course_id) {
+      andConditions.push({ course_id: filters.course_id });
+    }
+
+    if (filters.name) {
+      const searchTermLower = filters.name.toLowerCase();
+
+      andConditions.push(
+        Sequelize.where(
+          Sequelize.fn("lower", Sequelize.col("Material.name")),
+          { [Op.like]: `%${searchTermLower}%` }
+        )
+      );
+    }
     const materials = await Material.findAll({
+      where: { [Op.and]: andConditions },
       attributes: [
         "id",
         "name",
         "classPeriod",
         "course_id",
         "fileName",
+        "is_visible",
+        "role",
         "mimetype",
         "total_pages",
         "createdAt",

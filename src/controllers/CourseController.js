@@ -3,8 +3,8 @@ const CourseService = require("../services/CourseService");
 class CourseController {
     static async createCourse(req, res) {
         try {
-            const { title, degree, levelSeries, modality } = req.body;
-            const course = await CourseService.createCourse({ title, degree, levelSeries, modality });
+            const { title, degree, modality } = req.body;
+            const course = await CourseService.createCourse({ title, degree, modality });
             res.status(201).json(course);
         }
         catch (error) {
