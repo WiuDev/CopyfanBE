@@ -27,7 +27,7 @@ async function isAuthenticated(req, res, next) {
             return res.status(401).json({ error: 'User not found in database' });
         }
         
-        req.user = { id: userDB.id, role: userDB.role };
+        req.user = { id: userDB.id, role: userDB.role, email: userDB.email, name: userDB.name };
         
         return next();
         

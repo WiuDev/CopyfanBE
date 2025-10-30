@@ -7,6 +7,7 @@ const OrderController = require("../controllers/OrderController");
 const ValueController = require("../controllers/ValueController");
 const PaymentController = require("../controllers/PaymentController");
 const CourseController = require("../controllers/CourseController");
+const CheckoutController = require("../controllers/CheckoutController");
 const isAuthenticated = require("../middlewares/isAuth");
 const isAdmin = require("../middlewares/isAdmin");
 const upload = require("../middlewares/upload");
@@ -20,7 +21,11 @@ router.put("/users/me", isAuthenticated, UserController.updateUser);
 router.get("/orders/me", isAuthenticated, OrderController.getOrdersByUser);
 router.get("/materials/:id", isAuthenticated, MaterialController.getMaterial);
 router.get("/materials", isAuthenticated, MaterialController.getAllMaterials);
-router.get('/materials/:id/metadata', isAuthenticated, MaterialController.getMaterialDetails);
+router.get(
+  "/materials/:id/metadata",
+  isAuthenticated,
+  MaterialController.getMaterialDetails
+);
 router.get("/values", isAuthenticated, ValueController.getValue);
 router.get("/orders/:id", isAuthenticated, OrderController.getOrderById);
 router.get(
@@ -37,7 +42,13 @@ router.post(
   upload.single("file"),
   MaterialController.createMaterial
 );
-router.post('/orders/calculate', isAuthenticated, OrderController.calculateOrderPrice);
+router.post(
+  "/orders/calculate",
+  isAuthenticated,
+  OrderController.calculateOrderPrice
+);
+
+router.post("/checkout", isAuthenticated, CheckoutController.createPreference);
 
 //WITH ADMIN
 router.put(
