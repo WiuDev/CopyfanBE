@@ -8,6 +8,7 @@ const ValueController = require("../controllers/ValueController");
 const PaymentController = require("../controllers/PaymentController");
 const CourseController = require("../controllers/CourseController");
 const CheckoutController = require("../controllers/CheckoutController");
+const {handleWebhookNotification, handleFailureRedirect, handleSuccessRedirect} = require("../controllers/WebHookController");
 const isAuthenticated = require("../middlewares/isAuth");
 const isAdmin = require("../middlewares/isAdmin");
 const upload = require("../middlewares/upload");
@@ -47,8 +48,13 @@ router.post(
   isAuthenticated,
   OrderController.calculateOrderPrice
 );
-
 router.post("/checkout", isAuthenticated, CheckoutController.createPreference);
+router.post("/webhooks/mercadopago", handleWebhookNotification)
+router.get('/success', handleSuccessRedirect); 
+router.get('/pending', handleSuccessRedirect);
+router.get('/failure', handleFailureRedirect)
+
+
 
 //WITH ADMIN
 router.put(

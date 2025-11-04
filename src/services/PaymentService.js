@@ -60,6 +60,22 @@ class PaymentService {
     const payments = await Payment.findAll();
     return payments;
   }
+  static async updatePaymentStatusByOrderId({ orderId, status, mpId, transaction = null }) {
+    if (!Object.values(PaymentService.STATUS).includes(status)) {
+        throw new Error("Invalid payment status");
+    }
+    const payment = await Payment.findOne({ where: { order_id: orderId }, transaction });
+    
+    if (!payment) {
+        throw new Error("Payment not found for this order.");
+    }
+    
+    payment.statusPayment = status;
+    payment.mp_id = mpId;
+    
+    await payment.save({ transaction });
+    return payment;
+}
 }
 
 module.exports = PaymentService;
