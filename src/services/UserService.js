@@ -110,6 +110,12 @@ class UserService {
     }
     return user;
   }
+  static async getAllUsers() {
+    const users = await User.findAll({
+      attributes: ["id", "name", "email", "role"],
+    });
+    return users;
+  }
 }
 
 module.exports = UserService;

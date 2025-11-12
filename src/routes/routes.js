@@ -82,12 +82,7 @@ router.post(
   isAdmin,
   CourseController.createCourse
 );
-// router.get("/orders/:UserId", isAuthenticated, OrderController.getOrdersByUser);
-// router.get("/admin/orders", isAuthenticated, isAdmin, AdminController.getAllOrders);
-// router.get("/admin/orders/:id", isAuthenticated, isAdmin, AdminController.getOrderById);
-// router.put("/admin/orders/:id/status", isAuthenticated, isAdmin, AdminController.updateOrderStatus);
-// router.get("/admin/financial/report", isAuthenticated, isAdmin, AdminController.getFinancialReport);
-
+router.get("/users", isAuthenticated, isAdmin, UserController.getAllUsers);
 router.get("/", (req, res) => {
   res.send("COPYFAN!");
 });
