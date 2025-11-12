@@ -69,7 +69,25 @@ class OrderService {
     return order;
   }
   static async getAllOrders() {
-    const orders = await Order.findAll();
+    const orders = await Order.findAll({
+      include: [
+        {
+          model: Payment,
+          as: "payment",
+          attributes: ["statusPayment", "totalValue"],
+        },
+        {
+          model: Material,
+          as: "materials",
+          through: {
+            model: MaterialOrder,
+            attributes: ["start_page", "end_page", "quantity"],
+          },
+          attributes: ["name", "classPeriod", "total_pages"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
     return orders;
   }
   static async getOrderById(orderId) {
