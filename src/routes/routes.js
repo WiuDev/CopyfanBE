@@ -76,6 +76,16 @@ router.post(
   isAdmin,
   CourseController.createCourse
 );
+router.get(
+  "/courses/admin",
+  isAuthenticated,
+  isAdmin,
+  CourseController.courseFilter
+);
+router.delete(
+  "/courses/:id",
+  isAuthenticated,isAdmin, CourseController.deleteCourse
+);
 router.get("/payments/admin/report", isAuthenticated, isAdmin, PaymentController.getAdminPaymentReport);
 router.get("/users", isAuthenticated, isAdmin, UserController.getAllUsers);
 router.put("/users/:id", isAuthenticated, isAdmin, UserController.updateUserRole);

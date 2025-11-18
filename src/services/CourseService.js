@@ -1,4 +1,5 @@
 const Course = require("../models/Courses");
+const { Op } = require("sequelize");
 
 class CourseService {
   static async createCourse({ title, degree, modality }) {
@@ -29,11 +30,9 @@ class CourseService {
     }
 
     if (!title || !degree || !modality) {
-      throw new Error(
-        "All fields are required: title, degree, modality"
-      );
+      throw new Error("All fields are required: title, degree, modality");
     }
-    const course = new Course({ title, degree,modality });
+    const course = new Course({ title, degree, modality });
     await course.save();
     return course;
   }
@@ -43,6 +42,31 @@ class CourseService {
       order: [["title", "ASC"]],
     });
     return courses;
+  }
+  static async courseFilter(search = "") {
+    const options = {
+      attributes: ["id", "title", "degree", "modality"],
+      order: [["title", "ASC"]],
+      where: {},
+    };
+    if (search) {
+      options.where = {
+        title: {
+          [Op.iLike]: `%${search}%`,
+        },
+      };
+    }
+
+    const courses = await Course.findAll(options);
+    return courses;
+  }
+  static async deleteCourse(courseId) {
+    const course = await Course.findByPk(courseId);
+    if (!course) {
+      throw new Error("Course not found");
+    }
+    await course.destroy();
+    return;
   }
 }
 module.exports = CourseService;
