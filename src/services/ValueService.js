@@ -1,17 +1,16 @@
 const Value = require("../models/Values");
 const { Op } = require("sequelize");
+const sequelize = require("../database/index");
 
 const DESCRIPTIONS = {
-    PRECO_BASE_PB: "Preço base P&B",
-    ACRESCIMO_COLORIDO: "Acréscimo Colorido",
-    ACRESCIMO_FRENTE_VERSO: "Acréscimo Frente e Verso",
-    PRECO_ENCADERNACAO: "Preço de Encadernação",
-}
-
+  PRECO_BASE_PB: "Preço base P&B",
+  ACRESCIMO_COLORIDO: "Acréscimo Colorido",
+  ACRESCIMO_FRENTE_VERSO: "Acréscimo Frente e Verso",
+  PRECO_ENCADERNACAO: "Preço de Encadernação",
+};
 
 class ValueService {
-
-    static DESCRIPTIONS = DESCRIPTIONS;
+  static DESCRIPTIONS = DESCRIPTIONS;
   /**
    * @param {Transaction} t
    * @returns {Promise<Object>}
@@ -20,7 +19,7 @@ class ValueService {
     const now = new Date();
     const prices = await Value.findAll({
       where: {
-        description: {[Op.in]: Object.values(DESCRIPTIONS)},
+        description: { [Op.in]: Object.values(DESCRIPTIONS) },
         start_date: { [Op.lte]: now },
         [Op.or]: [
           { end_date: { [Op.eq]: null } },
@@ -29,7 +28,6 @@ class ValueService {
       },
       transaction: t,
     });
-    console.log("Found prices:", prices);
     if (!prices || prices.length < Object.keys(DESCRIPTIONS).length) {
       throw new Error("No current prices found");
     }
@@ -40,27 +38,34 @@ class ValueService {
 
     return pricesMap;
   }
-  static async createValue({ description, value, start_date, end_date}) {
+
+  static async createValue({ description, value, start_date, end_date }) {
     if (!Object.values(DESCRIPTIONS).includes(description)) {
-        throw new Error(`Invalid description. Try: ${Object.values(DESCRIPTIONS).join(', ')}`);
+      throw new Error(
+        `Invalid description. Try: ${Object.values(DESCRIPTIONS).join(", ")}`
+      );
     }
-    return await Value.create({
-      description,
-      value,
-      start_date,
-      end_date
-    });
-  }
-  static async updateValue(id, { description, value, start_date, end_date}) {
-    const valueRecord = await Value.findByPk(id);
-    if (!valueRecord) {
-      throw new Error("Value record not found");
+    const numericValue = parseFloat(value);
+    if (isNaN(numericValue) || numericValue < 0) {
+        throw new Error(`Invalid value provided for ${description}.`);
     }
-    return await valueRecord.update({
-      description,
-      value,
-      start_date,
-      end_date
+    const now = new Date();
+    return await sequelize.transaction(async (t) => {
+      await Value.update(
+        { end_date: now },
+        {
+          where: {
+            description,
+            end_date: { [Op.eq]: null },
+          },
+          transaction: t,
+        }
+      );
+      const newValue = await Value.create(
+        { description, value: numericValue, start_date : start_date || now, end_date: null },
+        { transaction: t }
+      );
+      return newValue;
     });
   }
 }

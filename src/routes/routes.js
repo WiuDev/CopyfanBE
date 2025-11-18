@@ -36,7 +36,6 @@ router.get(
 );
 router.get("/courses", CourseController.getAllCourses);
 router.post("/orders", isAuthenticated, OrderController.createOrder);
-router.post("/values", isAuthenticated, ValueController.createValue);
 router.post(
   "/materials",
   isAuthenticated,
@@ -57,12 +56,7 @@ router.get('/failure', handleFailureRedirect)
 
 
 //WITH ADMIN
-router.put(
-  "/values/:id",
-  isAuthenticated,
-  isAdmin,
-  ValueController.updateValue
-);
+router.post("/values", isAuthenticated, isAdmin, ValueController.createValue);
 router.put(
   "/orders/:id/status",
   isAuthenticated,
@@ -82,6 +76,7 @@ router.post(
   isAdmin,
   CourseController.createCourse
 );
+router.get("/payments/admin/report", isAuthenticated, isAdmin, PaymentController.getAdminPaymentReport);
 router.get("/users", isAuthenticated, isAdmin, UserController.getAllUsers);
 router.get("/", (req, res) => {
   res.send("COPYFAN!");

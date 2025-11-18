@@ -1,5 +1,6 @@
 const Payment = require("../models/Payments");
 const { v4: UUIDV4 } = require("uuid");
+const sequelize = require("../database/index");
 
 class PaymentService {
   static STATUS = {
@@ -60,22 +61,45 @@ class PaymentService {
     const payments = await Payment.findAll();
     return payments;
   }
-  static async updatePaymentStatusByOrderId({ orderId, status, mpId, transaction = null }) {
+  static async updatePaymentStatusByOrderId({
+    orderId,
+    status,
+    mpId,
+    transaction = null,
+  }) {
     if (!Object.values(PaymentService.STATUS).includes(status)) {
-        throw new Error("Invalid payment status");
+      throw new Error("Invalid payment status");
     }
-    const payment = await Payment.findOne({ where: { order_id: orderId }, transaction });
-    
+    const payment = await Payment.findOne({
+      where: { order_id: orderId },
+      transaction,
+    });
+
     if (!payment) {
-        throw new Error("Payment not found for this order.");
+      throw new Error("Payment not found for this order.");
     }
-    
+
     payment.statusPayment = status;
     payment.mp_id = mpId;
-    
+
     await payment.save({ transaction });
     return payment;
-}
+  }
+  /**
+   * @returns {Promise<string>}
+   */
+  static async getCompletedPaymentTotal() {
+    const result = await Payment.findOne({
+      attributes: [
+        [sequelize.fn("SUM", sequelize.col("totalValue")), "totalRevenue"],
+      ],
+      where: {
+        statusPayment: PaymentService.STATUS.COMPLETED,
+      },
+      raw: true,
+    });
+    return result.totalRevenue || "0.00";
+  }
 }
 
 module.exports = PaymentService;
