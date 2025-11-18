@@ -36,9 +36,26 @@ class UserController {
     }
   }
   static async getAllUsers(req, res) {
+    const { search } = req.query;
     try {
-      const users = await UserService.getAllUsers();
+      const users = await UserService.getAllUsers(search);
       res.status(200).json(users);
+    } catch (error) {
+      console.error("Erro ao buscar usuários:", error);
+      return res
+        .status(500)
+        .json({ error: "Falha ao buscar a lista de usuários." });
+    }
+  }
+  static async updateUserRole(req, res) {
+    const userId = req.params.id; 
+    const { role } = req.body;
+    try {
+      const updatedUser = await UserService.updateUserRole(userId, role);
+      res.status(200).json({
+        message: "User role updated successfully",
+        user: updatedUser,
+      })
     } catch (error) {
       res.status(400).json({ error: error.message });
     }

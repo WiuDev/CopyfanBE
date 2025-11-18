@@ -78,6 +78,7 @@ router.post(
 );
 router.get("/payments/admin/report", isAuthenticated, isAdmin, PaymentController.getAdminPaymentReport);
 router.get("/users", isAuthenticated, isAdmin, UserController.getAllUsers);
+router.put("/users/:id", isAuthenticated, isAdmin, UserController.updateUserRole);
 router.get("/", (req, res) => {
   res.send("COPYFAN!");
 });

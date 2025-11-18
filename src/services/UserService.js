@@ -1,5 +1,6 @@
 const User = require("../models/Users");
 const bcrypt = require("bcryptjs");
+const { Op } = require("sequelize");
 
 class UserService {
   /**
@@ -65,7 +66,7 @@ class UserService {
       role: role || "user",
       course_id,
     });
-    if(!user){
+    if (!user) {
       throw new Error("User creation failed");
     }
     const userObject = user.get({ plain: true });
@@ -110,11 +111,48 @@ class UserService {
     }
     return user;
   }
-  static async getAllUsers() {
+
+  /**
+   * @param {string} search - Termo de busca (nome ou email).
+   * @returns {Promise<Array<User>>} Lista de usuários.
+   */
+
+  static async getAllUsers(search = "") {
+    let whereClause = {};
+    if (search) {
+      whereClause = {
+        [Op.or]: [
+          { name: { [Op.iLike]: `%${search}%` } },
+          { email: { [Op.iLike]: `%${search}%` } },
+        ],
+      };
+    }
     const users = await User.findAll({
-      attributes: ["id", "name", "email", "role"],
+      where: whereClause,
+      attributes: ["id", "name", "email", "role", "createdAt"],
     });
     return users;
+  }
+  /**
+   * @param {UUID} userId
+   * @param {string} newRole
+   * @returns {Promise<User>}
+   */
+  static async updateUserRole(userId, newRole) {
+    if(!["user", "admin", "professor"].includes(newRole)) {
+      throw new Error("Invalid role. Allowed roles are 'user', 'admin', 'professor'.");
+    }
+    const [updatedRows] = await User.update(
+      { role: newRole },
+      { where: { id: userId } }
+    );
+    if (updatedRows === 0) {
+      throw new Error("User not found or role not updated");
+    }
+    const updatedUser = await User.findByPk(userId, {
+      attributes: ["id", "name", "email", "role"],
+    });
+    return updatedUser;
   }
 }
 
