@@ -2,10 +2,7 @@ const { client, Preference } = require('../config/MercadoPagoConfig.mjs');
 
 exports.createPreference = async (req, res) => {
     
-    const { orderId, totalValue, description } = req.body;
-    
-    const userEmail = 'test_user_1039688960975491054@testuser.com'
-    const userName = 'Test User'
+    const { orderId, totalValue, description, userEmail, userName } = req.body;
 
     if (!orderId || !totalValue || !userEmail) {
         return res.status(400).json({ error: "Dados do pedido ausentes." });
@@ -28,7 +25,6 @@ exports.createPreference = async (req, res) => {
             payer: {
                 email: userEmail, 
                 name: userName,
-                identification: { type: "CPF", number: "12345678909" }, 
             },
             
             external_reference: orderId,
