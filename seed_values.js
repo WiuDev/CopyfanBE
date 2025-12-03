@@ -9,7 +9,7 @@ const valuesData = [
         end_date: null
     },
     {
-        description: "Preço da Encadernação",
+        description: "Preço de Encadernação",
         value: 4.50,
         start_date: Date.now(),
         end_date: null
