@@ -16,6 +16,8 @@ const upload = require("../middlewares/upload");
 // WITHOUT AUTH
 router.post("/auth/register", UserController.createUser);
 router.post("/auth/login", LoginController.login);
+router.post("/auth/forgot-password", LoginController.forgotPassword);
+router.post("/auth/reset-password", LoginController.resetPassword);
 // WITH AUTH
 router.get("/users/me", isAuthenticated, UserController.getUser);
 router.put("/users/me", isAuthenticated, UserController.updateUser);
