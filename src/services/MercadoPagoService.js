@@ -4,9 +4,9 @@ const { client, Preference } = require('../config/MercadoPagoConfig.mjs');
 const MercadoPagoClient = require('mercadopago'); 
 
 /**
- * Cria uma Preferência de Pagamento no Mercado Pago.
- * @param {Object} data - Dados da preferência.
- * @returns {Promise<Object>} Resposta com o link de pagamento.
+ * 
+ * @param {Object} data
+ * @returns {Promise<Object>}
  */
 const createPreference = async (data) => {
     
@@ -51,5 +51,5 @@ const getPayment = async (paymentId) => {
 module.exports = {
     createPreference,
     getPayment,
-    getPaymentById: getPayment, // Reusa a função getPayment
+    getPaymentById: getPayment,
 };
