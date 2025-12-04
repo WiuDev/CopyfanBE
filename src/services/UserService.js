@@ -1,7 +1,7 @@
 const User = require("../models/Users");
 const bcrypt = require("bcryptjs");
 const { Op } = require("sequelize");
-const EmailService = require("./emailService");
+const EmailService = require("./EmailService");
 
 class UserService {
   /**
