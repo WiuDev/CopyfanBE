@@ -36,7 +36,6 @@ async function sendPasswordResetEmail(userEmail, resetToken) {
                 </div>
             `,
         });
-        console.log(`E-mail de redefinição enviado com sucesso para ${userEmail}`);
     } catch (error) {
         console.error(`Falha ao enviar e-mail para ${userEmail}:`, error.message);
         throw new Error("Falha no serviço de envio de e-mail.");

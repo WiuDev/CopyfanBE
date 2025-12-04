@@ -1,7 +1,8 @@
 const User = require("../models/Users");
 const bcrypt = require("bcryptjs");
-const { Op } = require("sequelize");
+const { Op, Sequelize} = require("sequelize");
 const EmailService = require("./EmailService");
+const crypto = require("crypto");
 
 class UserService {
   /**
@@ -179,7 +180,7 @@ class UserService {
             console.error('Erro ao enviar e-mail de redefinição:', error);
             throw new Error('Falha no envio do e-mail. Tente novamente mais tarde.');
         }
-    }
+    } 
     /**
      * 
      * @param {string} token
@@ -192,7 +193,7 @@ class UserService {
         const user = await User.findOne({
             where: {
                 resetPasswordToken: token,
-                resetPasswordExpires: { [Sequelize.Op.gt]: new Date() } 
+                resetPasswordExpires: { [Op.gt]: new Date() } 
             }
         });
 
