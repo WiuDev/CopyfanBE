@@ -21,10 +21,8 @@ class LoginController {
       const result = await UserService.forgotPassword(email);
       return res.status(200).json(result);
     } catch (error) {
-      console.error(error);
-      return res
-        .status(500)
-        .json({ error: error.message || "Erro interno do servidor." });
+      console.error("Erro no Forgot Password:", error.message);
+      return res.status(500).json({ error: "Erro ao processar a solicitação." });
     }
   }
   static async resetPassword(req, res) {
