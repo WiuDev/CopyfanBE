@@ -58,7 +58,9 @@ class PaymentService {
     return payment;
   }
   static async getAllPayments() {
-    const payments = await Payment.findAll();
+    const payments = await Payment.findAll({
+      order: [["createdAt", "DESC"]],
+    });
     return payments;
   }
   static async updatePaymentStatusByOrderId({
