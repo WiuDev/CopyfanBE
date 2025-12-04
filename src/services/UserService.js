@@ -167,15 +167,15 @@ class UserService {
             console.warn(`Tentativa de recuperação de senha para e-mail não encontrado: ${email}`);
             return { message: "Se o e-mail estiver cadastrado, um link de redefinição será enviado." };
         }
-        const resetToken = crypto.randomBytes(20).toString('hex');
+        const OTP_CODE = Math.floor(100000 + Math.random() * 900000).toString();
         const resetExpires = new Date(Date.now() + 3600000); 
         await user.update({
-            resetPasswordToken: resetToken,
+            resetPasswordToken: OTP_CODE,
             resetPasswordExpires: resetExpires,
         });
         try {
-            await EmailService.sendPasswordResetEmail(user.email, resetToken);
-            return { message: "Seu link de redefinição de senha foi enviado para o seu e-mail." };
+            await EmailService.sendPasswordResetEmail(user.email, OTP_CODE);
+            return { message: "Um código de redefinição de 6 dígitos foi enviado para o seu e-mail." };
         } catch (error) {
             console.error('Erro ao enviar e-mail de redefinição:', error);
             throw new Error('Falha no envio do e-mail. Tente novamente mais tarde.');
@@ -183,16 +183,16 @@ class UserService {
     } 
     /**
      * 
-     * @param {string} token
+     * @param {string} code
      * @param {string} newPassword
      */
-    static async resetPassword(token, newPassword) {
-        if (!token || !newPassword) {
-            throw new Error('400: Token e nova senha são obrigatórios.');
+    static async resetPassword(code, newPassword) {
+        if (!code || !newPassword) {
+            throw new Error('400: Código de redefinição e nova senha são obrigatórios.');
         }
         const user = await User.findOne({
             where: {
-                resetPasswordToken: token,
+                resetPasswordToken: code,
                 resetPasswordExpires: { [Op.gt]: new Date() } 
             }
         });

@@ -4,32 +4,31 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 /**
  *
  * @param {string} userEmail
- * @param {string} resetToken
+ * @param {string} otpCode
  */
-async function sendPasswordResetEmail(userEmail, resetToken) {
-  const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+async function sendPasswordResetEmail(userEmail, otpCode) {
+  const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${otpCode}`;
   const msg = {
     to: userEmail,
     from: process.env.SENDGRID_SENDER_EMAIL,
     subject: "Recuperação de Senha - Copyfan",
-    html: `
-    <p>Olá,</p>
-    <p>Clique no botão abaixo para redefinir sua senha:</p>
-    <a href="${resetUrl}" style="
-      background-color: #007bff; 
-      color: white; 
-      padding: 10px 20px; 
-      text-align: center; 
-      text-decoration: none; 
-      display: inline-block; 
-      border-radius: 5px;
-      font-weight: bold;
-    ">
-      Redefinir Senha
-    </a>
-    <p>Se o botão não funcionar, copie e cole este link no seu navegador:</p>
-    <p>${resetUrl}</p>
-  `,
+    html: `<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; text-align: center;">
+        <h2 style="color: #FF9C55;">Redefinição de Senha Solicitada</h2>
+        <p>Você solicitou um código de redefinição para sua conta Copyfan.</p>
+        
+        <p style="font-size: 18px; font-weight: bold; margin: 30px 0;">
+            Seu código de 6 dígitos é:
+        </p>
+        
+        <div style="background-color: #5D82FB; color: white; padding: 20px; border-radius: 8px; font-size: 36px; font-weight: bold; display: inline-block;">
+            ${otpCode} 
+        </div>
+        
+        <p style="margin-top: 30px;">
+            Insira este código no aplicativo para continuar.
+        </p>
+      </div>
+    `,
   };
 
   try {
