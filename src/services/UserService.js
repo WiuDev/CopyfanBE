@@ -1,6 +1,8 @@
 const User = require("../models/Users");
 const bcrypt = require("bcryptjs");
-const { Op } = require("sequelize");
+const { Op, Sequelize} = require("sequelize");
+const EmailService = require("./EmailService");
+const crypto = require("crypto");
 
 class UserService {
   /**
@@ -154,6 +156,62 @@ class UserService {
     });
     return updatedUser;
   }
+  /**
+     *
+     * @param {string} email
+     */
+    static async forgotPassword(email) {
+        const user = await User.findOne({ where: { email } });
+
+        if (!user) {
+            console.warn(`Tentativa de recuperação de senha para e-mail não encontrado: ${email}`);
+            return { message: "Se o e-mail estiver cadastrado, um link de redefinição será enviado." };
+        }
+        const OTP_CODE = Math.floor(100000 + Math.random() * 900000).toString();
+        const resetExpires = new Date(Date.now() + 3600000); 
+        await user.update({
+            resetPasswordToken: OTP_CODE,
+            resetPasswordExpires: resetExpires,
+        });
+        try {
+            await EmailService.sendPasswordResetEmail(user.email, OTP_CODE);
+            return { message: "Um código de redefinição de 6 dígitos foi enviado para o seu e-mail." };
+        } catch (error) {
+            console.error('Erro ao enviar e-mail de redefinição:', error);
+            throw new Error('Falha no envio do e-mail. Tente novamente mais tarde.');
+        }
+    } 
+    /**
+     * 
+     * @param {string} code
+     * @param {string} newPassword
+     */
+    static async resetPassword(code, newPassword) {
+        if (!code || !newPassword) {
+            throw new Error('400: Código de redefinição e nova senha são obrigatórios.');
+        }
+        const user = await User.findOne({
+            where: {
+                resetPasswordToken: code,
+                resetPasswordExpires: { [Op.gt]: new Date() } 
+            }
+        });
+
+        if (!user) {
+            throw new Error('400: Token inválido ou expirado.');
+        }
+
+        const newPasswordHash = await bcrypt.hash(newPassword, 10);
+        
+        await user.update({
+            password: newPasswordHash,
+          
+            resetPasswordToken: null, 
+            resetPasswordExpires: null,
+        });
+
+        return { message: "Sua senha foi redefinida com sucesso. Faça login." };
+    }
 }
 
 module.exports = UserService;
