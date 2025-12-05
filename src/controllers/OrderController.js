@@ -87,5 +87,18 @@ class OrderController {
       res.status(400).json({ error: error.message });
     }
   }
+  static async cancelOrder(req, res) {
+    const orderId = req.params.id;
+    const userId = req.user.id;
+    try {
+      const canceledOrder = await OrderService.cancelOrder(orderId, userId);
+      res.status(200).json({
+        message: "Order canceled successfully",
+        order: canceledOrder,
+      });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
 }
 module.exports = OrderController;

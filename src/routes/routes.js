@@ -54,6 +54,7 @@ router.post("/webhooks/mercadopago", handleWebhookNotification)
 router.get('/success', handleSuccessRedirect); 
 router.get('/pending', handleSuccessRedirect);
 router.get('/failure', handleFailureRedirect)
+router.put("/orders/:id/cancel", isAuthenticated, OrderController.cancelOrder);
 
 
 

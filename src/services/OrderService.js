@@ -134,6 +134,21 @@ class OrderService {
     });
     return orders;
   }
+  static async cancelOrder(orderId, userId) {
+    const order = await Order.findByPk(orderId);
+    if (!order) {
+      throw new Error("Order not found");
+    }
+    if (order.user_id !== userId) {
+      throw new Error("You are not authorized to cancel this order");
+    }
+    if (order.status !== OrderService.STATUS.WAITING_PAYMENT) {
+        throw new Error(`Order cannot be canceled because its current status is '${order.status}'. Only 'waiting_payment' orders can be canceled.`);
+    }
+    order.status = OrderService.STATUS.CANCELED;
+    await order.save();
+    return order;
+  }
 }
 
 module.exports = OrderService;
