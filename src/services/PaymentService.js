@@ -1,6 +1,8 @@
 const Payment = require("../models/Payments");
 const { v4: UUIDV4 } = require("uuid");
 const sequelize = require("../database/index");
+const Order = require("../models/Orders");
+const { Op } = require("sequelize");
 
 class PaymentService {
   static STATUS = {
@@ -60,6 +62,13 @@ class PaymentService {
   static async getAllPayments() {
     const payments = await Payment.findAll({
       order: [["createdAt", "DESC"]],
+      include: [{
+        model: Order,
+        as: "order_details",
+        where: { status: { [Op.ne]: 'canceled' } },
+        required: true,
+      }],
+      where: {statusPayment: { [Op.ne]: 'canceled' } },
     });
     return payments;
   }
